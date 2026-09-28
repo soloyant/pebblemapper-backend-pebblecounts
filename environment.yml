@@ -1,0 +1,18 @@
+# PebbleCountsAuto's dependencies. GDAL is the one that needs conda; with
+# conda's classic solver that single solve can exhaust memory, in which case
+# PM_PC_ENV=maskrcnn runs the adapter in PebbleMapper's own environment,
+# which already holds every package below.
+name: pm-pebblecounts
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - gdal
+  - pip
+  - pip:
+      - opencv-python
+      - scikit-image
+      - scikit-learn
+      - shapely
+      - matplotlib
+      - pillow-heif
