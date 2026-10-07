@@ -9,13 +9,14 @@ writes, for each job, an *instance file* next to the CSV the core expects::
                                                   detector confidence)
                               shape   (H, W)
 
-The upstream script is run unmodified, as its own process, in a scratch
-folder (it writes its outputs beside the image it is given and asks before
-overwriting, so it never sees a folder with previous results). Its
-``_PebbleCountsAuto_LABELS.tif`` is the label image read back here.
+The upstream script is run unmodified inside this process (``runpy``), in a
+scratch folder (it writes its outputs beside the image it is given and asks
+before overwriting, so it never sees a folder with previous results). The
+grain mask it builds internally (``label_fixed``) is the label image kept here.
 
-PebbleCountsAuto is GPL-3.0; it is executed, never imported into
-PebbleMapper, and nothing of it is redistributed with the application.
+PebbleCountsAuto is GPL-3.0-or-later, and so is this adapter. PebbleMapper
+(MIT) only launches this script as a separate process and reads back the
+label image; nothing of PebbleCounts is redistributed with the application.
 
 Spec params honoured: ``resolution`` (metres per pixel; the script takes
 mm/px), and ``pc`` (a dict passed through as command-line options:

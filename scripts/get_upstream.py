@@ -1,4 +1,5 @@
-"""Clone PebbleCounts (GPL-3.0) into upstream/, where run.py expects it.
+"""Clone PebbleCounts (GPL-3.0) into upstream/, where run.py expects it, at the
+commit the adapter was tested with.
 
     python scripts/get_upstream.py
 """
@@ -23,10 +24,13 @@ import subprocess
 import sys
 from pathlib import Path
 
+URL = "https://github.com/UP-RS-ESP/PebbleCounts.git"
+COMMIT = "4c80b2f2bd555bd3903141d9073032d8982bb11d"
+
 dest = Path(__file__).resolve().parents[1] / "upstream"
 if (dest / "PebbleCountsAuto.py").exists():
     print(f"have {dest}")
     sys.exit(0)
-subprocess.run(["git", "clone", "--depth", "1",
-                "https://github.com/UP-RS-ESP/PebbleCounts.git", str(dest)], check=True)
-print(f"cloned into {dest}")
+subprocess.run(["git", "clone", URL, str(dest)], check=True)
+subprocess.run(["git", "-C", str(dest), "checkout", "--quiet", COMMIT], check=True)
+print(f"cloned into {dest} at {COMMIT[:7]}")
