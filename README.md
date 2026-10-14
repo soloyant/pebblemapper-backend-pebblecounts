@@ -19,6 +19,18 @@ modified.
 
 ## Installation
 
+**From PebbleMapper (Windows).** Open the **Models** tab, or click **Add a model…** under
+*Detection model* in the left drawer, and click **Install** beside PebbleCountsAuto.
+PebbleMapper downloads this repository's release, which carries an unmodified copy of
+PebbleCounts' `PebbleCountsAuto.py` and `PCfunctions.py` with their GPL-3.0 licence, and the
+exact software environment the release was tested with (GDAL included, installed from a fixed
+list of packages, so no conda solve is needed), checks every file against its checksum, runs
+it once on a test photograph, and adds it to the Detection model list. It runs on the
+processor and needs no graphics card. `check.jpg`, that test photograph, is a crop of
+`example_02a` from PebbleMapper's example data (© Antoine Soloy, CC BY 4.0).
+
+**By hand** (other systems, or to work on the adapter):
+
 1. Clone PebbleCounts into `upstream/`:
 
    ```bat

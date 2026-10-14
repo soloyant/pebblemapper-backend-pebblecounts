@@ -35,6 +35,7 @@ included in this repository or redistributed with the application.
 # with this program. If not, see <https://www.gnu.org/licenses/>.
 from __future__ import annotations
 
+import dataclasses
 import json
 import os
 from pathlib import Path
@@ -63,8 +64,9 @@ INFO = BackendInfo(
     framework="classical (opencv + scikit-image)",
     license=("GPL-3.0-or-later (PebbleCounts, Copyright Benjamin Purinton; "
              "this adapter is GPL-3.0-or-later too, Copyright 2026 Antoine "
-             "Soloy). The upstream script is executed as a separate process "
-             "and is not redistributed with this adapter or with PebbleMapper."),
+             "Soloy). The upstream script is executed as a separate process; "
+             "the adapter's releases carry an unmodified copy of it with its "
+             "licence. It is not part of PebbleMapper."),
     output_type="instance",
     env=ENV_NAME,
     in_process=False,
@@ -82,9 +84,12 @@ INFO = BackendInfo(
 )
 
 
-def make_backend():
-    """Zero-argument factory named in user_detectors.json."""
-    return PebbleCountsBackend()
+def make_backend(ctx=None):
+    """The factory PebbleMapper calls. ``ctx`` is ``None`` when declared by
+    hand in user_detectors.json (it then reads ``PM_PC_*``), and a
+    ``detectors.base.InstallContext`` when PebbleMapper installed it from its
+    Models tab."""
+    return PebbleCountsBackend(ctx)
 
 
 class PebbleCountsBackend(InstanceSubprocessBackend):
@@ -95,9 +100,22 @@ class PebbleCountsBackend(InstanceSubprocessBackend):
     model_version = "PebbleCountsAuto (2019)"
     log_prefix = "pebblecounts"
 
+    def __init__(self, ctx=None):
+        self.upstream = UPSTREAM
+        if ctx is not None:
+            self.env_name = ctx.env_prefix
+            self.variant = ctx.variant
+            # run.py finds upstream/ beside its own package, as installed.
+            self.upstream = ctx.code_dir / "upstream"
+            self.model_version = f"{ctx.release} ({self.model_version})"
+            self.info = dataclasses.replace(
+                INFO, env=str(ctx.env_prefix),
+                install_hint="Installed from PebbleMapper's Models tab; repair "
+                             "or remove it there.")
+
     def is_available(self) -> bool:
         return (super().is_available()
-                and (UPSTREAM / "PebbleCountsAuto.py").is_file())
+                and (self.upstream / "PebbleCountsAuto.py").is_file())
 
     def spec_params(self, mode, kwargs, resolution):
         log_fn = kwargs.get("log_fn") or (lambda s: None)

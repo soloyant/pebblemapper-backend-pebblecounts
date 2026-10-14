@@ -1,0 +1,15 @@
+{
+ "id": "pebblecounts",
+ "backends": [
+  {"name": "pebblecounts", "display_name": "PebbleCountsAuto (Purinton & Bookhagen)",
+   "package": "pm_pebblecounts_backend", "module": "backend", "factory": "make_backend"}
+ ],
+ "authors": "Purinton, B. & Bookhagen, B.",
+ "citation": "Purinton, B., & Bookhagen, B. (2019). Introducing PebbleCounts: a grain-sizing tool for photo surveys of dynamic gravel-bed rivers. Earth Surface Dynamics, 7, 859-877. https://doi.org/10.5194/esurf-7-859-2019",
+ "licence_code": "GPL-3.0-or-later (PebbleCounts and this adapter)",
+ "licence_weights": "none (no trained model)",
+ "description": "Edge detection and ellipse filtering, no neural network and no weights; runs on the processor. Every clast is scored 1.0 (no per-instance confidence).",
+ "homepage": "https://github.com/soloyant/pebblemapper-backend-pebblecounts",
+ "runs_in": "own",
+ "upstream_name": "PebbleCounts"
+}
