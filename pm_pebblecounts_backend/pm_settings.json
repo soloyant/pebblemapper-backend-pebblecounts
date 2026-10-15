@@ -3,19 +3,19 @@
  "model": "pebblecounts",
  "shared_controls": [],
  "not_used": {
-  "tile_size": "PebbleCountsAuto processes each image whole, orthos included.",
-  "overlap": "PebbleCountsAuto processes each image whole, with no tiles.",
-  "device": "PebbleCountsAuto runs on the processor only.",
-  "device_number": "PebbleCountsAuto runs on the processor only.",
-  "confidence": "PebbleCountsAuto gives no detector confidence.",
-  "dedup": "PebbleCountsAuto processes each image whole, so nothing is found twice."
+  "tile_size": "it processes each image whole, orthos included.",
+  "overlap": "it processes each image whole, with no tiles.",
+  "device": "it runs on the processor only.",
+  "device_number": "it runs on the processor only.",
+  "confidence": "it gives no detector confidence.",
+  "dedup": "it processes each image whole, so nothing is found twice."
  },
  "settings": [
   {
    "key": "otsu_threshold",
-   "label": "Shadow threshold (percent of the Otsu value)",
-   "help": "Pixels darker than this percentage of the image's Otsu value are taken as shadow between grains and ignored. Higher: more of the image is treated as shadow; lower: less.",
-   "unit": "",
+   "label": "Shadow threshold (share of the Otsu value)",
+   "help": "Pixels darker than this share of the Otsu value are shadow between grains. Higher: more shadow.",
+   "unit": "%",
    "kind": "number", "min": 1, "max": 200, "step": 1, "integer": true,
    "default": 50,
    "authors": {"value": null, "source": "PebbleCountsAuto.py -otsu_threshold: no default; the program asks for it on screen at each run"},
@@ -26,8 +26,8 @@
   {
    "key": "min_size_threshold",
    "label": "Minimum grain area",
-   "help": "Grains smaller than this area are removed when the grain mask is cleaned. Higher: small grains and specks are dropped.",
-   "unit": "px",
+   "help": "Smaller grains are removed when the grain mask is cleaned. Higher: fewer specks.",
+   "unit": "px²",
    "kind": "number", "min": 0, "max": 1000, "step": 1, "integer": true,
    "default": 10,
    "authors": {"value": 20, "source": "PebbleCountsAuto.py help: 10 for about 1 mm per pixel, 20 for images finer than 0.8 mm per pixel"},
@@ -38,7 +38,7 @@
   {
    "key": "cutoff",
    "label": "Shortest grain kept (b-axis)",
-   "help": "Grains whose b-axis is shorter than this many pixels are not counted. Higher: small grains are not counted.",
+   "help": "Grains with a shorter b-axis are not counted. Higher: small grains are not counted.",
    "unit": "px",
    "kind": "number", "min": 1, "max": 500, "step": 1, "integer": true,
    "default": 20,
@@ -49,8 +49,8 @@
   {
    "key": "percent_overlap",
    "label": "Largest overlap between neighbouring ellipses",
-   "help": "A grain whose fitted ellipse overlaps a neighbour's by more than this percentage is treated as suspect and removed. Higher: more grains kept, some of them doubtful.",
-   "unit": "",
+   "help": "Grains whose ellipse overlaps a neighbour's by more are removed. Higher: more grains kept, some doubtful.",
+   "unit": "%",
    "kind": "number", "min": 0, "max": 100, "step": 1, "integer": true,
    "default": 15,
    "authors": {"value": 15, "source": "PebbleCountsAuto.py, default"},
@@ -60,8 +60,8 @@
   {
    "key": "misfit_threshold",
    "label": "Largest misfit between ellipse and grain",
-   "help": "A grain whose mask differs from its fitted ellipse by more than this percentage is treated as suspect and removed. Higher: more irregular grains kept.",
-   "unit": "",
+   "help": "Grains that fit their ellipse worse than this are removed. Higher: more irregular grains kept.",
+   "unit": "%",
    "kind": "number", "min": 0, "max": 100, "step": 1, "integer": true,
    "default": 30,
    "authors": {"value": 30, "source": "PebbleCountsAuto.py, default"},
@@ -71,7 +71,7 @@
   {
    "key": "first_nl_denoise",
    "label": "First denoising strength",
-   "help": "Strength of the first non-local-means filtering of colour. Higher: smoother image, fewer false edges, fine detail lost.",
+   "help": "Smooths the colours before edges are looked for. Higher: fewer false edges, fine detail lost.",
    "unit": "",
    "kind": "number", "min": 0, "max": 50, "step": 1, "integer": true,
    "default": 5,
@@ -82,7 +82,7 @@
   {
    "key": "tophat_th",
    "label": "Top-hat edge percentile",
-   "help": "The top percentile of the top-hat filter taken as grain edges. Higher: only the strongest edges are kept, so grains merge more often.",
+   "help": "Percentile above which the top-hat filter marks an edge. Higher: fewer edges, grains merge more.",
    "unit": "",
    "kind": "number", "min": 0, "max": 100, "step": 1, "integer": false,
    "default": 90.0,
@@ -93,7 +93,7 @@
   {
    "key": "sobel_th",
    "label": "Sobel edge percentile",
-   "help": "The top percentile of the Sobel filter taken as grain edges. Higher: only the strongest edges are kept, so grains merge more often.",
+   "help": "Percentile above which the Sobel filter marks an edge. Higher: fewer edges, grains merge more.",
    "unit": "",
    "kind": "number", "min": 0, "max": 100, "step": 1, "integer": false,
    "default": 90.0,
@@ -104,7 +104,7 @@
   {
    "key": "canny_sig",
    "label": "Canny edge smoothing (sigma)",
-   "help": "Smoothing of the Canny edge detection. Higher: fewer, smoother edges, so grains merge more often.",
+   "help": "Smoothing of the edge detection. Higher: fewer edges, grains merge more.",
    "unit": "",
    "kind": "number", "min": 1, "max": 10, "step": 1, "integer": true,
    "default": 2,
