@@ -21,7 +21,12 @@ label image; nothing of PebbleCounts is redistributed with the application.
 Spec params honoured: ``resolution`` (metres per pixel; the script takes
 mm/px), and ``pc`` (a dict passed through as command-line options:
 otsu_threshold, cutoff, percent_overlap, misfit_threshold,
-min_size_threshold, first_nl_denoise, tophat_th, sobel_th, canny_sig).
+min_size_threshold, first_nl_denoise, tophat_th, sobel_th, canny_sig;
+described in ``pm_settings.json``).
+
+Each instance file also carries ``resolved``: every value the run used and the
+package versions (PebbleMapper 1.2's record of a result; older PebbleMapper
+versions ignore it).
 """
 # Copyright (C) 2026 Antoine Soloy
 # SPDX-License-Identifier: GPL-3.0-or-later
@@ -135,6 +140,17 @@ def _run_upstream(image_path, resolution_m, opts, work_dir):
     return labels.astype(np.int32), int(n)
 
 
+def _versions():
+    from importlib import metadata
+    out = {"PebbleCountsAuto": "upstream PebbleCountsAuto.py shipped with this release"}
+    for name in ("opencv-python", "opencv-python-headless", "scikit-image", "numpy", "scipy"):
+        try:
+            out[name] = metadata.version(name)
+        except metadata.PackageNotFoundError:
+            pass
+    return out
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description="PebbleCounts backend for PebbleMapper.")
     ap.add_argument("--spec", required=True)
@@ -160,9 +176,15 @@ def main(argv=None):
             labels, n = _run_upstream(staged, resolution, opts, work_dir)
             h, w = labels.shape
             scores = np.ones(n, dtype=np.float32)
+            used = {k: opts.get(k, d) for k, d in _OPTIONS.items()}
+            resolved = {"format": 1, "settings": used, "versions": _versions(),
+                        "device": {"kind": "cpu", "index": None, "name": "processor"},
+                        "reduction": {"factor": 1.0, "reason": ""},
+                        "tiles": {"size_px": int(max(h, w)), "overlap_px": 0}}
             os.makedirs(os.path.dirname(out_npz) or ".", exist_ok=True)
             np.savez_compressed(out_npz, labels=labels, scores=scores,
-                                shape=np.array([h, w], dtype=np.int64))
+                                shape=np.array([h, w], dtype=np.int64),
+                                resolved=np.array(json.dumps(resolved)))
             log(f"  {n} grains -> {os.path.basename(out_npz)} "
                 f"({time.time() - t0:.1f}s)")
         finally:

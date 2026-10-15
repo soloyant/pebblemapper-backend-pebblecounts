@@ -1,0 +1,121 @@
+{
+ "format": 1,
+ "model": "pebblecounts",
+ "shared_controls": [],
+ "not_used": {
+  "tile_size": "PebbleCountsAuto processes each image whole, orthos included.",
+  "overlap": "PebbleCountsAuto processes each image whole, with no tiles.",
+  "device": "PebbleCountsAuto runs on the processor only.",
+  "device_number": "PebbleCountsAuto runs on the processor only.",
+  "confidence": "PebbleCountsAuto gives no detector confidence.",
+  "dedup": "PebbleCountsAuto processes each image whole, so nothing is found twice."
+ },
+ "settings": [
+  {
+   "key": "otsu_threshold",
+   "label": "Shadow threshold (percent of the Otsu value)",
+   "help": "Pixels darker than this percentage of the image's Otsu value are taken as shadow between grains and ignored. Higher: more of the image is treated as shadow; lower: less.",
+   "unit": "",
+   "kind": "number", "min": 1, "max": 200, "step": 1, "integer": true,
+   "default": 50,
+   "authors": {"value": null, "source": "PebbleCountsAuto.py -otsu_threshold: no default; the program asks for it on screen at each run"},
+   "differs_because": "PebbleMapper runs without anyone at the screen, so a value must be given; 50 is PebbleMapper's choice and was not measured against other values.",
+   "modes": ["quadrat", "ortho"],
+   "main": true
+  },
+  {
+   "key": "min_size_threshold",
+   "label": "Minimum grain area",
+   "help": "Grains smaller than this area are removed when the grain mask is cleaned. Higher: small grains and specks are dropped.",
+   "unit": "px",
+   "kind": "number", "min": 0, "max": 1000, "step": 1, "integer": true,
+   "default": 10,
+   "authors": {"value": 20, "source": "PebbleCountsAuto.py help: 10 for about 1 mm per pixel, 20 for images finer than 0.8 mm per pixel"},
+   "differs_because": "kept at the program's default of 10; PebbleMapper's photographs are usually finer than 0.8 mm per pixel, for which the authors advise 20. Not yet measured here.",
+   "modes": ["quadrat", "ortho"],
+   "main": true
+  },
+  {
+   "key": "cutoff",
+   "label": "Shortest grain kept (b-axis)",
+   "help": "Grains whose b-axis is shorter than this many pixels are not counted. Higher: small grains are not counted.",
+   "unit": "px",
+   "kind": "number", "min": 1, "max": 500, "step": 1, "integer": true,
+   "default": 20,
+   "authors": {"value": 20, "source": "PebbleCountsAuto.py, default"},
+   "modes": ["quadrat", "ortho"],
+   "main": true
+  },
+  {
+   "key": "percent_overlap",
+   "label": "Largest overlap between neighbouring ellipses",
+   "help": "A grain whose fitted ellipse overlaps a neighbour's by more than this percentage is treated as suspect and removed. Higher: more grains kept, some of them doubtful.",
+   "unit": "",
+   "kind": "number", "min": 0, "max": 100, "step": 1, "integer": true,
+   "default": 15,
+   "authors": {"value": 15, "source": "PebbleCountsAuto.py, default"},
+   "modes": ["quadrat", "ortho"],
+   "main": false
+  },
+  {
+   "key": "misfit_threshold",
+   "label": "Largest misfit between ellipse and grain",
+   "help": "A grain whose mask differs from its fitted ellipse by more than this percentage is treated as suspect and removed. Higher: more irregular grains kept.",
+   "unit": "",
+   "kind": "number", "min": 0, "max": 100, "step": 1, "integer": true,
+   "default": 30,
+   "authors": {"value": 30, "source": "PebbleCountsAuto.py, default"},
+   "modes": ["quadrat", "ortho"],
+   "main": false
+  },
+  {
+   "key": "first_nl_denoise",
+   "label": "First denoising strength",
+   "help": "Strength of the first non-local-means filtering of colour. Higher: smoother image, fewer false edges, fine detail lost.",
+   "unit": "",
+   "kind": "number", "min": 0, "max": 50, "step": 1, "integer": true,
+   "default": 5,
+   "authors": {"value": 5, "source": "PebbleCountsAuto.py, default"},
+   "modes": ["quadrat", "ortho"],
+   "main": false
+  },
+  {
+   "key": "tophat_th",
+   "label": "Top-hat edge percentile",
+   "help": "The top percentile of the top-hat filter taken as grain edges. Higher: only the strongest edges are kept, so grains merge more often.",
+   "unit": "",
+   "kind": "number", "min": 0, "max": 100, "step": 1, "integer": false,
+   "default": 90.0,
+   "authors": {"value": 90.0, "source": "PebbleCountsAuto.py, default"},
+   "modes": ["quadrat", "ortho"],
+   "main": false
+  },
+  {
+   "key": "sobel_th",
+   "label": "Sobel edge percentile",
+   "help": "The top percentile of the Sobel filter taken as grain edges. Higher: only the strongest edges are kept, so grains merge more often.",
+   "unit": "",
+   "kind": "number", "min": 0, "max": 100, "step": 1, "integer": false,
+   "default": 90.0,
+   "authors": {"value": 90.0, "source": "PebbleCountsAuto.py, default"},
+   "modes": ["quadrat", "ortho"],
+   "main": false
+  },
+  {
+   "key": "canny_sig",
+   "label": "Canny edge smoothing (sigma)",
+   "help": "Smoothing of the Canny edge detection. Higher: fewer, smoother edges, so grains merge more often.",
+   "unit": "",
+   "kind": "number", "min": 1, "max": 10, "step": 1, "integer": true,
+   "default": 2,
+   "authors": {"value": 2, "source": "PebbleCountsAuto.py, default"},
+   "modes": ["quadrat", "ortho"],
+   "main": false
+  }
+ ],
+ "fixed": [
+  {"label": "Ortho mode", "value": "not used", "reason": "it needs choices made on screen; an ortho is processed as a photograph, whole, at its pixel size."},
+  {"label": "Sand mask and colour mask", "value": "not used", "reason": "the program draws them interactively on screen; PebbleMapper answers 'no'."},
+  {"label": "Processor", "value": "processor only", "reason": "PebbleCountsAuto does not use the graphics card."}
+ ]
+}
